@@ -79,7 +79,8 @@ sub fitness {
 	return 1/($energy + 1);
 }
 
-my @ranges = ([0, $scale]) x $num_genes;
+my @ranges = ([0, $scale]) x ($num_genes - 1);
+unshift @ranges, [0.5 * $scale, $scale]; # threshold > 0.5
 my $ga = new AI::Genetic(
 	-fitness => \&fitness,
 	-type => 'rangevector',
