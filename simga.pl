@@ -9,7 +9,8 @@ use File::Find;
 use Regexp::Common;
 
 my $bmark = "eembc2";
-my $scale = 1000; # 1/(quantum of gene variation)
+my $scale = 1000; # we represent [0,1] as {0,1,2,...$scale}
+my $quantum = 1/$scale; # quantum of gene variation
 my $num_genes = 13;
 $| = 1;
 
@@ -18,22 +19,22 @@ my $ecc_flags = $ENV{ECC_CC_FLAGS};
 # Given a list of genes (numbers in range 0...$scale), get corresponding args
 # to hand to ecc.
 sub ecc_args {
-	my @genes = map { $_ * $scale } @_;
-	return <<"ARGS";
-		-bt $genes[0]
-		-bw_noreturn $genes[1]
-		-bw_non_equal $genes[2]
-		-bw_pointer $genes[3]
-		-bw_positive $genes[4]
-		-bw_float $genes[5]
-		-bw_call $genes[6]
-		-bw_neg_return $genes[7]
-		-bw_null_return $genes[8]
-		-bw_const_return $genes[9]
-		-bw_loop_header $genes[10]
-		-bw_loop_branch $genes[11]
-		-bw_loop_exit $genes[12]
-ARGS
+	my @genes = map { $_ * $quantum } @_;
+	return join " ", (
+		"-bt", $genes[0],
+#		"-bw_noreturn", $genes[1],
+		"-bw_non_equal", $genes[2],
+		"-bw_pointer", $genes[3],
+		"-bw_positive", $genes[4],
+		"-bw_float", $genes[5],
+		"-bw_call", $genes[6],
+		"-bw_neg_return", $genes[7],
+		"-bw_null_return", $genes[8],
+		"-bw_const_return", $genes[9],
+		"-bw_loop_header", $genes[10],
+		"-bw_loop_branch", $genes[11],
+		"-bw_loop_exit", $genes[12],
+	);
 }
 
 sub energy_from_log {
@@ -71,6 +72,7 @@ sub sum_energies {
 sub fitness {
 	my @genes = @{$_[0]};
 	$ENV{ECC_CC_FLAGS} = $ecc_flags . " " . ecc_args(@genes);
+	print "ECC_CC_FLAGS: $ENV{ECC_CC_FLAGS}\n";
 	system "make clean-$bmark";
 	system "make run-$bmark";
 	my $energy = sum_energies();
