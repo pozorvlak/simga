@@ -37,18 +37,34 @@ sub ecc_args {
 	);
 }
 
+sub backup {
+	my $logfile = shift;
+	my $genes = join ":", @_;
+	if (! -d "backup") {
+		mkdir "backup";
+	}
+	open my $backup, ">>", "backup/$genes";
+	print $backup "\n\n";
+	local $/ = undef; # slurp files in this scope;
+	open my $log_fh, "<", $logfile;
+	my $log = <$log_fh>;
+	print $backup $log;
+	close $backup;
+}
+
 sub energy_from_log {
 	my $filename = shift;
 	my @genes = @_; # needed to provide sensible error messages
 	my $energy = 0;
 	my $seen = 0;
 	open my $log, "<", $_[0];
-	while (<>) {
+	while (<$log>) {
 		if (/BPU total energy\s*($RE{num}{real})\s*\(nJ\)/) {
 			$energy += $1;
 			$seen++;
 		}
 	}
+	close $log;
 	if ($seen != 1) {
 		warn "Saw $seen 'total energy' lines in $filename for genes "
 			. join(" ", @genes);
@@ -63,6 +79,7 @@ sub sum_energies {
 		if ($_ eq "sim.out") {
 			$energy += energy_from_log($File::Find::name, @genes);
 		}
+		backup $File::Find::name, @genes;
 	}, ".");
 	return $energy;
 }
@@ -84,6 +101,7 @@ unshift @ranges, [0.5 * $scale, $scale]; # threshold > 0.5
 my $ga = new AI::Genetic(
 	-fitness => \&fitness,
 	-type => 'rangevector',
+	-population => 50,
 );
 $ga->init(\@ranges);
 $ga->evolve('rouletteTwoPoint', 5);
