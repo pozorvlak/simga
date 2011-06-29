@@ -7,6 +7,7 @@ use AI::Genetic;
 use List::Util qw/sum/;
 use File::Find;
 use Regexp::Common;
+use File::Copy;
 
 my $bmark = "eembc2";
 my $scale = 1000; # we represent [0,1] as {0,1,2,...$scale}
@@ -43,13 +44,11 @@ sub backup {
 	if (! -d "backup") {
 		mkdir "backup";
 	}
-	open my $backup, ">>", "backup/$genes";
-	print $backup "\n\n";
-	local $/ = undef; # slurp files in this scope;
-	open my $log_fh, "<", $logfile;
-	my $log = <$log_fh>;
-	print $backup $log;
-	close $backup;
+	if (! -d "backup/$genes") {
+		mkdir "backup/$genes";
+	}
+	(my $newfilename = $logfile) =~ s|/|:|g;
+	move $logfile, "backup/$genes/$newfilename";
 }
 
 sub energy_from_log {
