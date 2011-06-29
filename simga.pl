@@ -23,7 +23,7 @@ sub ecc_args {
 	my @genes = map { $_ * $quantum } @_;
 	return join " ", (
 		"-bt", $genes[0],
-#		"-bw_noreturn", $genes[1],
+		"-bw_noreturn", $genes[1],
 		"-bw_non_equal", $genes[2],
 		"-bw_pointer", $genes[3],
 		"-bw_positive", $genes[4],
