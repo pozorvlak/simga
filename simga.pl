@@ -8,7 +8,7 @@ use List::Util qw/sum/;
 use File::Find;
 use Regexp::Common;
 use File::Copy;
-use Cwd;
+use Cwd qw/abs_path getcwd/;
 use Getopt::Long;
 
 my $bmark = "eembc2";
@@ -18,12 +18,15 @@ my $quantum = 1/$scale; # quantum of gene variation
 my $num_genes = 13;
 $| = 1;
 my $root_dir = getcwd();
+my $logfilename = "sim.out";
 
 my $generations = 10;
 my $population = 50;
+my $nobuild = 0;
 my $help = 0;
 GetOptions ("generations=i" => \$generations,
             "population=i" => \$population,
+	    "nobuild" => \$nobuild,
 	    "help" => \$help);
 if ($help) { usage(); }
 
@@ -35,9 +38,10 @@ sub usage {
 simga - run benchmarks under a genetic algorithm
 
 options:
-  --generations: number of generations to run (default 10)
-  --population:  population in a generation (default 50)
-  --help:        show this message
+  --generations  number of generations to run (default 10)
+  --nobuild      do not run benchmarks, just gather stats
+  --population   population in a generation (default 50)
+  --help         show this message
 
 END
 	exit 0;
@@ -68,7 +72,6 @@ sub backup {
 	my $logfile = shift;
 	my $fullname = shift;
 	my $genes = join ":", @_;
-	print STDERR "backing up $genes\n";
 	if (! -d "$root_dir/backup") {
 		mkdir "$root_dir/backup";
 	}
@@ -88,7 +91,7 @@ sub energy_from_log {
 	my @genes = @_; # needed to provide sensible error messages
 	my $energy = 0;
 	my $seen = 0;
-	open my $log, "<", $_[0] or die "Couldn't open $filename: $!";
+	open my $log, "<", $filename or die "Couldn't open $filename: $!";
 	while (<$log>) {
 		if (/BPU total energy\s*($RE{num}{real})\s*\(nJ\)/) {
 			$energy += $1;
@@ -107,9 +110,10 @@ sub sum_energies {
 	my @genes = @_; # needed to provide sensible error messages
 	my $energy = 0;
 	find(sub {
-		if ($_ eq "sim.out") {
-			$energy += energy_from_log($File::Find::name, @genes);
-			backup "sim.out", $File::Find::name, @genes;
+		if ($_ eq $logfilename) {
+			$energy += energy_from_log($logfilename, @genes);
+                        # passing in $_ leads to first arg being undefined...
+			backup $logfilename, $File::Find::name, @genes;
 		}
 	}, $bmark_dir);
 	return $energy;
@@ -121,8 +125,10 @@ sub fitness {
 	my @genes = @{$_[0]};
 	$ENV{ECC_CC_FLAGS} = $ecc_flags . " " . ecc_args(@genes);
 	print "ECC_CC_FLAGS: $ENV{ECC_CC_FLAGS}\n";
-	system "make -j clean-$bmark";
-	system "make -j run-$bmark";
+	unless ($nobuild) {
+		system "make -j clean-$bmark";
+		system "make -j run-$bmark";
+	}
 	my $energy = sum_energies(@genes);
 	return 1/($energy + 1);
 }
