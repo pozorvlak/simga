@@ -13,7 +13,7 @@ use Getopt::Long;
 
 my $bmark = "eembc2";
 my $bmark_dir = "EEMBC/eembc-2.0";
-my $scale = 1000; # we represent [0,1] as {0,1,2,...$scale}
+my $scale = 100; # we represent [0,1] as {0,1,2,...$scale}
 my $quantum = 1/$scale; # quantum of gene variation
 my $num_genes = 13;
 $| = 1;
