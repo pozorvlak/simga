@@ -8,12 +8,15 @@ use List::Util qw/sum/;
 use File::Find;
 use Regexp::Common;
 use File::Copy;
+use Cwd;
 
 my $bmark = "eembc2";
+my $bmark_dir = "EEMBC/eembc-2.0";
 my $scale = 1000; # we represent [0,1] as {0,1,2,...$scale}
 my $quantum = 1/$scale; # quantum of gene variation
 my $num_genes = 13;
 $| = 1;
+my $root_dir = getcwd;
 
 my $ecc_flags = $ENV{ECC_CC_FLAGS};
 
@@ -40,15 +43,21 @@ sub ecc_args {
 
 sub backup {
 	my $logfile = shift;
+	my $fullname = shift;
 	my $genes = join ":", @_;
-	if (! -d "backup") {
-		mkdir "backup";
+	print STDERR "backing up $genes\n";
+	if (! -d "$root_dir/backup") {
+		mkdir "$root_dir/backup";
 	}
-	if (! -d "backup/$genes") {
-		mkdir "backup/$genes";
+	if (! -d "$root_dir/backup/$genes") {
+		mkdir "$root_dir/backup/$genes";
 	}
-	(my $newfilename = $logfile) =~ s|/|:|g;
-	move $logfile, "backup/$genes/$newfilename";
+	(my $newfilename = $fullname) =~ s|/|:|g;
+	$newfilename =~ s/^.://;
+	my $newfilepath = "$root_dir/backup/$genes/$newfilename";
+	print STDERR "copying $fullname to $newfilepath\n";
+	if (! -e $logfile) { warn "$logfile doesn't exist\n"; }
+	copy $logfile, $newfilepath or warn "Couldn't copy: $!";
 }
 
 sub energy_from_log {
@@ -56,7 +65,7 @@ sub energy_from_log {
 	my @genes = @_; # needed to provide sensible error messages
 	my $energy = 0;
 	my $seen = 0;
-	open my $log, "<", $_[0];
+	open my $log, "<", $_[0] or die "Couldn't open $filename: $!";
 	while (<$log>) {
 		if (/BPU total energy\s*($RE{num}{real})\s*\(nJ\)/) {
 			$energy += $1;
@@ -77,9 +86,9 @@ sub sum_energies {
 	find(sub {
 		if ($_ eq "sim.out") {
 			$energy += energy_from_log($File::Find::name, @genes);
+			backup "sim.out", $File::Find::name, @genes;
 		}
-		backup $File::Find::name, @genes;
-	}, ".");
+	}, $bmark_dir);
 	return $energy;
 }
 
@@ -89,9 +98,9 @@ sub fitness {
 	my @genes = @{$_[0]};
 	$ENV{ECC_CC_FLAGS} = $ecc_flags . " " . ecc_args(@genes);
 	print "ECC_CC_FLAGS: $ENV{ECC_CC_FLAGS}\n";
-	system "make clean-$bmark";
-	system "make run-$bmark";
-	my $energy = sum_energies();
+	system "make -j clean-$bmark";
+	system "make -j run-$bmark";
+	my $energy = sum_energies(@genes);
 	return 1/($energy + 1);
 }
 
