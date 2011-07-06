@@ -14,7 +14,7 @@ use Getopt::Long;
 my $bmark = "eembc2";
 my $bmark_dir = "EEMBC/eembc-2.0";
 my $scale = 100; # we represent [0,1] as {0,1,2,...$scale}
-my $quantum = 1/$scale; # quantum of gene variation
+my $granularity = 1/$scale; # granularity of gene variation
 my $num_genes = 13;
 $| = 1;
 my $root_dir = getcwd();
@@ -50,7 +50,7 @@ END
 # Given a list of genes (numbers in range 0...$scale), get corresponding args
 # to hand to ecc.
 sub ecc_args {
-	my @genes = map { $_ * $quantum } @_;
+	my @genes = map { $_ * $granularity } @_;
 	return join " ", (
 		"-bt", $genes[0],
 		"-bw_noreturn", $genes[1],
