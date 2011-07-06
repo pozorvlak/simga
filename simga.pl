@@ -9,6 +9,7 @@ use File::Find;
 use Regexp::Common;
 use File::Copy;
 use Cwd;
+use Getopt::Long;
 
 my $bmark = "eembc2";
 my $bmark_dir = "EEMBC/eembc-2.0";
@@ -16,9 +17,31 @@ my $scale = 1000; # we represent [0,1] as {0,1,2,...$scale}
 my $quantum = 1/$scale; # quantum of gene variation
 my $num_genes = 13;
 $| = 1;
-my $root_dir = getcwd;
+my $root_dir = getcwd();
+
+my $generations = 10;
+my $population = 50;
+my $help = 0;
+GetOptions ("generations=i" => \$generations,
+            "population=i" => \$population,
+	    "help" => \$help);
+if ($help) { usage(); }
 
 my $ecc_flags = $ENV{ECC_CC_FLAGS};
+
+sub usage {
+	print <<END;
+
+simga - run benchmarks under a genetic algorithm
+
+options:
+  --generations: number of generations to run (default 10)
+  --population:  population in a generation (default 50)
+  --help:        show this message
+
+END
+	exit 0;
+}
 
 # Given a list of genes (numbers in range 0...$scale), get corresponding args
 # to hand to ecc.
@@ -109,10 +132,10 @@ unshift @ranges, [0.5 * $scale, $scale]; # threshold > 0.5
 my $ga = new AI::Genetic(
 	-fitness => \&fitness,
 	-type => 'rangevector',
-	-population => 50,
+	-population => $population,
 );
 $ga->init(\@ranges);
-$ga->evolve('rouletteTwoPoint', 5);
+$ga->evolve('rouletteTwoPoint', $generations);
 my $best = $ga->getFittest();
 print "Best score = ", $best->score, "\n";
 print "obtained with genes " . join(" ", $best->genes()) . "\n";
