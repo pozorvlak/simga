@@ -6,18 +6,20 @@ use autodie;
 use File::Find;
 use 5.010;
 use Cwd;
-use Sim::GA qw/energy_from_log/;
+use Sim::GA qw/energy_from_log cycles_from_log/;
 
 my $rootdir = getcwd();
 
 for my $chrom (<backup/*>) {
 	chdir $chrom;
 	my $energy = 0;
-	for my $logfile (<*>) {
-		$energy += energy_from_log($logfile);
+	my $cycles = 0;
+	for my $logfile (<*.out>) {
+		$energy += energy_from_log($logfile, $chrom);
+		$cycles += cycles_from_log($logfile, $chrom);
 	}
 	open my $total, ">", "total";
-	say $total $energy;
-	say "$chrom\t$energy";
+	say $total "$energy\t$cycles";
+	say "$chrom\t$energy\t$cycles";
 	chdir($rootdir);
 }
