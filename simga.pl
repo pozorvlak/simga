@@ -11,6 +11,7 @@ use File::Copy;
 use Cwd qw/abs_path getcwd/;
 use Getopt::Long;
 use Sim::GA qw/cycles_from_log/;
+use Sim::Flags qw/ecc_args/;
 
 my $bmark = "eembc2";
 my $bmark_dir = "EEMBC/eembc-2.0";
@@ -48,27 +49,6 @@ END
 	exit 0;
 }
 
-# Given a list of genes (numbers in range 0...$scale), get corresponding args
-# to hand to ecc.
-sub ecc_args {
-	my @genes = map { $_ * $granularity } @_;
-	return join " ", (
-		"-bt", $genes[0],
-		"-bw_noreturn", $genes[1],
-		"-bw_non_equal", $genes[2],
-		"-bw_pointer", $genes[3],
-		"-bw_positive", $genes[4],
-		"-bw_float", $genes[5],
-		"-bw_call", $genes[6],
-		"-bw_neg_return", $genes[7],
-		"-bw_null_return", $genes[8],
-		"-bw_const_return", $genes[9],
-		"-bw_loop_header", $genes[10],
-		"-bw_loop_branch", $genes[11],
-		"-bw_loop_exit", $genes[12],
-	);
-}
-
 sub backup {
 	my $logfile = shift;
 	my $fullname = shift;
@@ -103,7 +83,7 @@ sub sum_cycles {
 # flags set appropriately, collect energy usage.
 sub fitness {
 	my @genes = @{$_[0]};
-	$ENV{ECC_CC_FLAGS} = $ecc_flags . " " . ecc_args(@genes);
+	$ENV{ECC_CC_FLAGS} = $ecc_flags . " " . ecc_args($granularity, @genes);
 	print "ECC_CC_FLAGS: $ENV{ECC_CC_FLAGS}\n";
 	unless ($nobuild) {
 		system "make -j clean-$bmark";
