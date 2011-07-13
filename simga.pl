@@ -100,8 +100,10 @@ my $ga = new AI::Genetic(
 	-type => 'rangevector',
 	-population => $population,
 );
+system("date");
 $ga->init(\@ranges);
 $ga->evolve('rouletteTwoPoint', $generations);
 my $best = $ga->getFittest();
 print "Best score = ", $best->score, "\n";
+system("date");
 print "obtained with genes " . join(" ", $best->genes()) . "\n";
