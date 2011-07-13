@@ -10,7 +10,7 @@ use Regexp::Common;
 use File::Copy;
 use Cwd qw/abs_path getcwd/;
 use Getopt::Long;
-use Sim::GA qw/energy_from_log/;
+use Sim::GA qw/cycles_from_log/;
 
 my $bmark = "eembc2";
 my $bmark_dir = "EEMBC/eembc-2.0";
@@ -82,22 +82,21 @@ sub backup {
 	(my $newfilename = $fullname) =~ s|/|:|g;
 	$newfilename =~ s/^.://;
 	my $newfilepath = "$root_dir/backup/$genes/$newfilename";
-	print STDERR "copying $fullname to $newfilepath\n";
 	if (! -e $logfile) { warn "$logfile doesn't exist\n"; }
 	copy $logfile, $newfilepath or warn "Couldn't copy: $!";
 }
 
-sub sum_energies {
+sub sum_cycles {
 	my @genes = @_; # needed to provide sensible error messages
-	my $energy = 0;
+	my $cycles = 0;
 	find(sub {
 		if ($_ eq $logfilename) {
-			$energy += energy_from_log($logfilename, @genes);
+			$cycles += cycles_from_log($logfilename, @genes);
                         # passing in $_ leads to first arg being undefined...
 			backup $logfilename, $File::Find::name, @genes;
 		}
 	}, $bmark_dir);
-	return $energy;
+	return $cycles;
 }
 
 # Fitness function. Build and run benchmarks with branch-prediction
@@ -110,8 +109,8 @@ sub fitness {
 		system "make -j clean-$bmark";
 		system "make -j run-$bmark";
 	}
-	my $energy = sum_energies(@genes);
-	return 1/($energy + 1);
+	my $cycles = sum_cycles(@genes);
+	return 1/($cycles + 1);
 }
 
 my @ranges = ([0, $scale]) x ($num_genes - 1);

@@ -11,8 +11,8 @@ use Regexp::Common;
 sub cycles_from_log {
 	my $filename = shift;
 	return data_from_log($filename,
-		qr/total cycles\s*(\d*)/,
-		"total cycles",
+		qr/cycle count\s*=\s*(\d*)/i,
+		"cycle count",
 		@_);
 }
 
@@ -40,7 +40,7 @@ sub data_from_log {
 	}
 	close $log;
 	if ($seen != 1) {
-		warn "Saw $seen '$message' lines in $filename for genes "
+		warn "Saw $seen '$message' lines in $File::Find::name for genes "
 			. join(" ", @genes);
 	}
 	return $energy;
