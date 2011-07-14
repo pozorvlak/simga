@@ -19,7 +19,7 @@ sub cycles_from_log {
 sub energy_from_log {
 	my $filename = shift;
 	return data_from_log($filename,
-		qr/BPU total energy\s*($RE{num}{real})\s*\(nJ\)/,
+		qr/total energy\s*($RE{num}{real})\s*\(nJ\)/,
 		"total energy",
 		@_);
 }
