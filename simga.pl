@@ -10,7 +10,7 @@ use Regexp::Common;
 use File::Copy;
 use Cwd qw/abs_path getcwd/;
 use Getopt::Long;
-use Sim::GA qw/cycles_from_log/;
+use Sim::GA qw/cycles_from_log energy_from_log/;
 use Sim::Flags qw/ecc_args/;
 
 my $bmark = "eembc2";
@@ -26,10 +26,12 @@ my $generations = 10;
 my $population = 50;
 my $nobuild = 0;
 my $help = 0;
+my $optimize_for_cycles = 0;
 GetOptions ("generations=i" => \$generations,
             "population=i" => \$population,
 	    "nobuild" => \$nobuild,
-	    "help" => \$help);
+	    "help" => \$help,
+	    "cycles" => \$optimize_for_cycles);
 if ($help) { usage(); }
 
 my $ecc_flags = $ENV{ECC_CC_FLAGS};
@@ -40,6 +42,7 @@ sub usage {
 simga - run benchmarks under a genetic algorithm
 
 options:
+  --cycles       optimize for cycle count (default is energy usage)
   --generations  number of generations to run (default 10)
   --nobuild      do not run benchmarks, just gather stats
   --population   population in a generation (default 50)
@@ -66,17 +69,21 @@ sub backup {
 	copy $logfile, $newfilepath or warn "Couldn't copy: $!";
 }
 
-sub sum_cycles {
+sub sum_cost {
 	my @genes = @_; # needed to provide sensible error messages
-	my $cycles = 0;
+	my $cost = 0;
 	find(sub {
 		if ($_ eq $logfilename) {
-			$cycles += cycles_from_log($logfilename, @genes);
+			if ($optimize_for_cycles) {
+				$cost += cycles_from_log($logfilename, @genes);
+			} else {
+				$cost += energy_from_log($logfilename, @genes);
+			}
                         # passing in $_ leads to first arg being undefined...
 			backup $logfilename, $File::Find::name, @genes;
 		}
 	}, $bmark_dir);
-	return $cycles;
+	return $cost;
 }
 
 # Fitness function. Build and run benchmarks with branch-prediction
@@ -89,8 +96,8 @@ sub fitness {
 		system "make -j clean-$bmark";
 		system "make -j run-$bmark";
 	}
-	my $cycles = sum_cycles(@genes);
-	return 1/($cycles + 1);
+	my $cost = sum_cost(@genes);
+	return 1/($cost + 1);
 }
 
 my @ranges = ([0, $scale]) x ($num_genes - 1);
