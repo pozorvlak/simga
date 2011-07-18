@@ -7,11 +7,11 @@ use AI::Genetic;
 use List::Util qw/sum/;
 use File::Find;
 use Regexp::Common;
-use File::Copy;
 use Cwd qw/abs_path getcwd/;
 use Getopt::Long;
 use Sim::GA qw/cycles_from_log energy_from_log/;
 use Sim::Flags qw/ecc_args/;
+use Sim::Backup 'backup';
 
 my $bmark = "eembc2";
 my $bmark_dir = "EEMBC/eembc-2.0";
@@ -52,23 +52,6 @@ END
 	exit 0;
 }
 
-sub backup {
-	my $logfile = shift;
-	my $fullname = shift;
-	my $genes = join ":", @_;
-	if (! -d "$root_dir/backup") {
-		mkdir "$root_dir/backup";
-	}
-	if (! -d "$root_dir/backup/$genes") {
-		mkdir "$root_dir/backup/$genes";
-	}
-	(my $newfilename = $fullname) =~ s|/|:|g;
-	$newfilename =~ s/^.://;
-	my $newfilepath = "$root_dir/backup/$genes/$newfilename";
-	if (! -e $logfile) { warn "$logfile doesn't exist\n"; }
-	copy $logfile, $newfilepath or warn "Couldn't copy: $!";
-}
-
 sub sum_cost {
 	my @genes = @_; # needed to provide sensible error messages
 	my $cost = 0;
@@ -80,7 +63,7 @@ sub sum_cost {
 				$cost += energy_from_log($logfilename, @genes);
 			}
                         # passing in $_ leads to first arg being undefined...
-			backup $logfilename, $File::Find::name, @genes;
+			backup $root_dir, $logfilename, $File::Find::name, @genes;
 		}
 	}, $bmark_dir);
 	return $cost;
