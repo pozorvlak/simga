@@ -10,7 +10,8 @@ use Regexp::Common;
 
 sub cycles_from_log {
 	my $filename = shift;
-	return data_from_log($filename,
+	my $fullname = shift;
+	return data_from_log($filename, $fullname,
 		qr/cycle count\s*=\s*(\d*)/i,
 		"cycle count",
 		@_);
@@ -18,7 +19,8 @@ sub cycles_from_log {
 
 sub energy_from_log {
 	my $filename = shift;
-	return data_from_log($filename,
+	my $fullname = shift;
+	return data_from_log($filename, $fullname,
 		qr/total energy\s*($RE{num}{real})\s*\(nJ\)/,
 		"total energy",
 		@_);
@@ -26,6 +28,7 @@ sub energy_from_log {
 
 sub data_from_log {
 	my $filename = shift;
+	my $fullname = shift;
 	my $regex = shift;
 	my $message = shift;
 	my @genes = @_; # needed to provide sensible error messages
@@ -40,7 +43,7 @@ sub data_from_log {
 	}
 	close $log;
 	if ($seen != 1) {
-		warn "Saw $seen '$message' lines in $File::Find::name for genes "
+		warn "Saw $seen '$message' lines in $fullname for genes "
 			. join(" ", @genes);
 	}
 	return $energy;

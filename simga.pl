@@ -58,9 +58,9 @@ sub sum_cost {
 	find(sub {
 		if ($_ eq $logfilename) {
 			if ($optimize_for_cycles) {
-				$cost += cycles_from_log($logfilename, @genes);
+				$cost += cycles_from_log($logfilename, $File::Find::name, @genes);
 			} else {
-				$cost += energy_from_log($logfilename, @genes);
+				$cost += energy_from_log($logfilename, $File::Find::name, @genes);
 			}
                         # passing in $_ leads to first arg being undefined...
 			backup $root_dir, $logfilename, $File::Find::name, @genes;

@@ -14,8 +14,8 @@ for my $chrom (<backup/*>) {
 	my $energy = 0;
 	my $cycles = 0;
 	for my $logfile (<*.out>) {
-		$energy += energy_from_log($logfile, $chrom);
-		$cycles += cycles_from_log($logfile, $chrom);
+		$energy += energy_from_log($logfile, $logfile, $chrom);
+		$cycles += cycles_from_log($logfile, $logfile, $chrom);
 	}
 	open my $total, ">", "total";
 	print $total "$energy\t$cycles\n";
