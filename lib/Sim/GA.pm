@@ -7,6 +7,7 @@ use strict;
 use warnings;
 use Carp;
 use Regexp::Common;
+use Math::BigInt;
 
 sub cycles_from_log {
 	my $filename = shift;
@@ -45,6 +46,7 @@ sub data_from_log {
 	if ($seen != 1) {
 		warn "Saw $seen '$message' lines in $fullname for genes "
 			. join(" ", @genes);
+			$energy += Math::BigInt::binf();
 	}
 	return $energy;
 }
