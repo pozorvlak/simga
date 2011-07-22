@@ -1,0 +1,23 @@
+#!/bin/sh
+
+for ARCHNAME in $*;
+do
+	# delete old log files
+	rm -rf `find EEMBC -iname sim.out`
+	export ARCHFILE=$ARCHNAME.arc
+	DATE=`date +%y%m%d`
+	simga --generations=100 > $ARCHNAME.$DATE.ga 2>&1
+	frombackup
+	BACKUP=backup.$ARCHNAME.$DATE
+	if [ -d $BACKUP ]; then
+		mv backup/* $BACKUP
+		rmdir backup
+	else
+		mv backup backup.$ARCHNAME.$DATE
+	fi
+	# set symlink to most recently-run benchmark for $ARCHNAME
+	if [ -h backup.$ARCHNAME ]; then
+		rm backup.$ARCHNAME
+		ln -s backup.$ARCHNAME.$DATE backup.$ARCHNAME
+	fi
+done
