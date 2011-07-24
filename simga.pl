@@ -12,6 +12,7 @@ use Getopt::Long;
 use Sim::GA qw/cycles_from_log energy_from_log/;
 use Sim::Flags qw/ecc_args/;
 use Sim::Backup 'backup';
+use Math::BigInt;
 
 my $bmark = "eembc2";
 my $bmark_dir = "EEMBC/eembc-2.0";
