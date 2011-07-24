@@ -76,12 +76,12 @@ sub fitness {
 	my @genes = @{$_[0]};
 	$ENV{ECC_CC_FLAGS} = $ecc_flags . " " . ecc_args($granularity, @genes);
 	print "ECC_CC_FLAGS: $ENV{ECC_CC_FLAGS}\n";
+	my $ran_cleanly = 0;
 	unless ($nobuild) {
 		system "make -j distclean-$bmark";
-		system "make -j run-$bmark";
+		$ran_cleanly = (system "make -j run-$bmark" == 0);
 	}
-	my $cost = sum_cost(@genes);
-	return 1/($cost + 1);
+	return $ran_cleanly ? 1/(sum_cost(@genes) + 1) : 0;
 }
 
 my @ranges = ([0, $scale]) x ($num_genes - 1);
