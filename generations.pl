@@ -35,7 +35,7 @@ sub getopts {
 	return ($granularity, $logfile, $population, $backup_dir, $prefix);
 }
 
-my ($granularity, $logfile, $population, $backup_dir) = getopts();
+my ($granularity, $logfile, $population, $backup_dir, $prefix) = getopts();
 my @generations = Sim::Generations::generations(
-	$granularity, $logfile, $population, $backup_dir);
+	$granularity, $logfile, $population);
 print Dumper(\@generations);
