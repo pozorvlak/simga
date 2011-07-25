@@ -24,6 +24,7 @@ sub generations {
 			}
 		}
 	}
+	close $log;
 	return @generations;
 }
 
