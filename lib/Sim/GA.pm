@@ -1,10 +1,9 @@
 package Sim::GA;
-require Exporter;
-@ISA = qw(Exporter);
-@EXPORT_OK = qw(energy_from_log cycles_from_log);
 
 use strict;
 use warnings;
+use base 'Exporter';
+our @EXPORT_OK = qw(energy_from_log cycles_from_log);
 use Carp;
 use Regexp::Common;
 use Math::BigInt;

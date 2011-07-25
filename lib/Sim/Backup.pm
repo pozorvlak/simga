@@ -1,11 +1,11 @@
 package Sim::Backup;
 
+use strict;
+use warnings;
+use base 'Exporter';
+our @EXPORT_OK = qw(backup backup_all genes_to_dirname);
 use File::Copy;
 use File::Find;
-use Cwd qw/abs_path getcwd/;
-require Exporter;
-@ISA = qw(Exporter);
-@EXPORT_OK = qw(backup backup_all genes_to_dirname);
 
 my $logfilename = "sim.out";
 

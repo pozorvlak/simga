@@ -9,11 +9,11 @@ use Sim::GA qw/energy_from_log cycles_from_log/;
 
 my $rootdir = getcwd();
 
-for my $chrom (<backup/*>) {
+for my $chrom (glob backup/*) {
 	chdir $chrom;
 	my $energy = 0;
 	my $cycles = 0;
-	for my $logfile (<*.out>) {
+	for my $logfile (glob *.out) {
 		$energy += energy_from_log($logfile, $logfile, $chrom);
 		$cycles += cycles_from_log($logfile, $logfile, $chrom);
 	}

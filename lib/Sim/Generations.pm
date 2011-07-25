@@ -1,10 +1,9 @@
 package Sim::Generations;
-require Exporter;
-@ISA = qw(Exporter);
-@EXPORT_OK = ();
 
 use strict;
 use warnings;
+use base 'Exporter';
+our @EXPORT_OK = ();
 use Carp;
 use Sim::Flags 'parse_args';
 

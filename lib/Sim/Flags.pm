@@ -1,7 +1,9 @@
 package Sim::Flags;
-require Exporter;
-@ISA = qw(Exporter);
-@EXPORT_OK = qw(ecc_args parse_args);
+
+use strict;
+use warnings;
+use base 'Exporter';
+our @EXPORT_OK = qw(ecc_args parse_args);
 use Carp;
 use Regexp::Common;
 use POSIX qw/floor ceil/;
