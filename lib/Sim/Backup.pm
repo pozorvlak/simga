@@ -5,15 +5,17 @@ use File::Find;
 use Cwd qw/abs_path getcwd/;
 require Exporter;
 @ISA = qw(Exporter);
-@EXPORT_OK = qw(backup backup_all);
+@EXPORT_OK = qw(backup backup_all genes_to_dirname);
 
 my $logfilename = "sim.out";
 
+sub genes_to_dirname {
+	return join ":", @_;
+}
+
 sub backup {
-	my $root_dir = shift;
-	my $logfile = shift;
-	my $fullname = shift;
-	my $genes = join ":", @_;
+	my ($root_dir, $logfile, $fullname, @genes) = @_;
+	my $genes = genes_to_dirname(@genes);
 	if (! -d "$root_dir/backup") {
 		mkdir "$root_dir/backup";
 	}

@@ -11,7 +11,7 @@ use Cwd qw/abs_path getcwd/;
 use Getopt::Long;
 use Sim::GA qw/cycles_from_log energy_from_log/;
 use Sim::Flags qw/ecc_args/;
-use Sim::Backup 'backup';
+use Sim::Backup qw/backup genes_to_dirname/;
 use Math::BigInt;
 
 my $bmark = "eembc2";
@@ -98,4 +98,4 @@ $ga->evolve('rouletteTwoPoint', $generations);
 my $best = $ga->getFittest();
 print "Best score = ", $best->score, "\n";
 system("date");
-print "obtained with genes " . join(" ", $best->genes()) . "\n";
+print "obtained with genes " . genes_to_dirname($best->genes()) . "\n";
