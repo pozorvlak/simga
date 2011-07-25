@@ -1,8 +1,22 @@
 package Sim::Flags;
 require Exporter;
 @ISA = qw(Exporter);
-@EXPORT_OK = qw(ecc_args);
+@EXPORT_OK = qw(ecc_args parse_args);
 use Carp;
+use Regexp::Common;
+use POSIX qw/floor ceil/;
+
+sub round {
+	my $x = shift;
+	my $f = floor($x);
+	my $c = ceil($x);
+	if (($x - $f) > ($c - $x)) {
+		return $c;
+	} else {
+		return $f;
+	}
+}
+
 
 my @flag_names = (
 	"-bt",
@@ -34,6 +48,14 @@ sub ecc_args {
 # The inverse function. Given a value of ECC_CC_FLAGS, give the genes that gave
 # rise to it.
 sub parse_args {
+	my ($granularity, $argstring) = @_;
+	my @genes;
+	for my $i (0 .. $#flag_names) {
+		$argstring =~ /$flag_names[$i]\s+($RE{num}{real})/
+			or carp "No value for flag $flag_names[$i] in flag specification '$argstring'";
+		$genes[$i] = $1;
+	}
+	return map { round($_ / $granularity) } @genes;
 }
 
 1;
