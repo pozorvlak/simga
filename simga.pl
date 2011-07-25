@@ -75,7 +75,7 @@ sub sum_cost {
 sub fitness {
 	my @genes = @{$_[0]};
 	$ENV{ECC_CC_FLAGS} = $ecc_flags . " " . ecc_args($granularity, @genes);
-	print "ECC_CC_FLAGS: $ENV{ECC_CC_FLAGS}\n";
+	print "ECC_CC_FLAGS='$ENV{ECC_CC_FLAGS}'\n";
 	my $ran_cleanly = 0;
 	unless ($nobuild) {
 		system "make -j distclean-$bmark";
