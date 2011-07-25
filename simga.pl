@@ -91,7 +91,11 @@ my $ga = new AI::Genetic(
 	-type => 'rangevector',
 	-population => $population,
 );
-print "Architecture file: $ENV{ARCHFILE}\n";
+if (defined $ENV{ARCHFILE}) {
+	print "Architecture file: $ENV{ARCHFILE}\n";
+} else {
+	print "Architecture file unspecified, using default.\n";
+}
 system("date");
 $ga->init(\@ranges);
 $ga->evolve('rouletteTwoPoint', $generations);
