@@ -16,6 +16,7 @@ sub genes_to_dirname {
 sub backup {
 	my ($root_dir, $logfile, $fullname, @genes) = @_;
 	my $genes = genes_to_dirname(@genes);
+	print "Backing up to $root_dir/backup/$genes\n";
 	if (! -d "$root_dir/backup") {
 		mkdir "$root_dir/backup";
 	}
