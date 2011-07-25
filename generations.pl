@@ -5,6 +5,8 @@ use warnings;
 use Sim::Generations;
 use Getopt::Long;
 use Data::Dumper;
+use File::Spec::Functions;
+use Sim::Backup 'genes_to_dirname';
 
 sub usage {
 	print <<END;
@@ -38,4 +40,11 @@ sub getopts {
 my ($granularity, $logfile, $population, $backup_dir, $prefix) = getopts();
 my @generations = Sim::Generations::generations(
 	$granularity, $logfile, $population);
-print Dumper(\@generations);
+for my $gen (0 .. $#generations) {
+	open my $fh, ">", "$prefix$gen";
+	for my $chrom (@{$generations[$gen]}) {
+		print $fh catfile($backup_dir, genes_to_dirname(@$chrom));
+		print $fh "\n";
+	}
+}
+
