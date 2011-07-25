@@ -79,7 +79,7 @@ sub fitness {
 	my $ran_cleanly = 0;
 	unless ($nobuild) {
 		system "make -j distclean-$bmark";
-		$ran_cleanly = (system "make -j run-$bmark" == 0);
+		$ran_cleanly = (system("make -j run-$bmark") == 0);
 	}
 	return $ran_cleanly ? 1/(sum_cost(@genes) + 1) : 0;
 }
