@@ -25,3 +25,9 @@ sub ecc_args {
 	);
 }
 
+# The inverse function. Given a value of ECC_CC_FLAGS, give the genes that gave
+# rise to it.
+sub parse_args {
+}
+
+1;
