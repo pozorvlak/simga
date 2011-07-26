@@ -9,7 +9,11 @@ use Sim::GA qw/energy_from_log cycles_from_log/;
 
 my $rootdir = getcwd();
 
-for my $chrom (glob "backup/*") {
+my $backup_dir = $ARGV[0] || "backup";
+
+die "Directory $backup_dir does not exist" unless -d $backup_dir;
+
+for my $chrom (glob "$backup_dir/*") {
 	chdir $chrom;
 	my $energy = 0;
 	my $cycles = 0;
