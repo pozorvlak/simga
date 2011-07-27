@@ -24,13 +24,13 @@ is(ecc_args(0.01, 7, 87, 86, 71, 54, 3, 40, 83, 6, 1, 14, 54, 90),
 is(ecc_args(0.01, 96, 75, 69, 62, 18, 53, 61, 1, 82, 12, 15, 16, 29),
 '-bt 0.96 -bw_noreturn 0.75 -bw_non_equal 0.69 -bw_pointer 0.62 -bw_positive 0.18 -bw_float 0.53 -bw_call 0.61 -bw_neg_return 0.01 -bw_null_return 0.82 -bw_const_return 0.12 -bw_loop_header 0.15 -bw_loop_branch 0.16 -bw_loop_exit 0.29');
 is(ecc_args(0.01, 38, 36, 7, 62, 0, 59, 23, 69, 36, 46, 6, 31, 39),
-'-bt 0.38 -bw_noreturn 0.36 -bw_non_equal 0.07 -bw_pointer 0.62 -bw_positive 0 -bw_float 0.59 -bw_call 0.23 -bw_neg_return 0.69 -bw_null_return 0.36 -bw_const_return 0.46 -bw_loop_header 0.06 -bw_loop_branch 0.31 -bw_loop_exit 0.39');
+'-bt 0.38 -bw_noreturn 0.36 -bw_non_equal 0.07 -bw_pointer 0.62 -bw_positive 0.0001 -bw_float 0.59 -bw_call 0.23 -bw_neg_return 0.69 -bw_null_return 0.36 -bw_const_return 0.46 -bw_loop_header 0.06 -bw_loop_branch 0.31 -bw_loop_exit 0.39');
 is(ecc_args(0.01, 39, 3, 38, 4, 4, 5, 73, 60, 11, 81, 56, 64, 44),
 '-bt 0.39 -bw_noreturn 0.03 -bw_non_equal 0.38 -bw_pointer 0.04 -bw_positive 0.04 -bw_float 0.05 -bw_call 0.73 -bw_neg_return 0.6 -bw_null_return 0.11 -bw_const_return 0.81 -bw_loop_header 0.56 -bw_loop_branch 0.64 -bw_loop_exit 0.44');
 is(ecc_args(0.01, 19, 91, 61, 73, 4, 44, 32, 10, 70, 90, 54, 81, 15),
 '-bt 0.19 -bw_noreturn 0.91 -bw_non_equal 0.61 -bw_pointer 0.73 -bw_positive 0.04 -bw_float 0.44 -bw_call 0.32 -bw_neg_return 0.1 -bw_null_return 0.7 -bw_const_return 0.9 -bw_loop_header 0.54 -bw_loop_branch 0.81 -bw_loop_exit 0.15');
 is(ecc_args(0.01, 64, 32, 50, 4, 13, 41, 14, 11, 33, 0, 96, 6, 68),
-'-bt 0.64 -bw_noreturn 0.32 -bw_non_equal 0.5 -bw_pointer 0.04 -bw_positive 0.13 -bw_float 0.41 -bw_call 0.14 -bw_neg_return 0.11 -bw_null_return 0.33 -bw_const_return 0 -bw_loop_header 0.96 -bw_loop_branch 0.06 -bw_loop_exit 0.68');
+'-bt 0.64 -bw_noreturn 0.32 -bw_non_equal 0.5 -bw_pointer 0.04 -bw_positive 0.13 -bw_float 0.41 -bw_call 0.14 -bw_neg_return 0.11 -bw_null_return 0.33 -bw_const_return 0.0001 -bw_loop_header 0.96 -bw_loop_branch 0.06 -bw_loop_exit 0.68');
 is(ecc_args(0.01, 26, 49, 53, 29, 93, 10, 68, 45, 7, 95, 29, 60, 76),
 '-bt 0.26 -bw_noreturn 0.49 -bw_non_equal 0.53 -bw_pointer 0.29 -bw_positive 0.93 -bw_float 0.1 -bw_call 0.68 -bw_neg_return 0.45 -bw_null_return 0.07 -bw_const_return 0.95 -bw_loop_header 0.29 -bw_loop_branch 0.6 -bw_loop_exit 0.76');
 is(ecc_args(0.01, 45, 42, 44, 95, 77, 8, 69, 23, 35, 10, 84, 42, 97),

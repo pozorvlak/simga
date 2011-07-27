@@ -42,6 +42,7 @@ my @flag_names = (
 sub ecc_args {
 	my $granularity = shift;
 	my @genes = map { $_ * $granularity } @_;
+	@genes = map { $_ == 0 ? $granularity ** 2 : $_ } @genes;
 	carp "Expected ".scalar(@flag_names)." genes, got ".scalar(@genes)
 		unless $#flag_names == $#genes;
 	return join(" ", map { $flag_names[$_], $genes[$_] } (0 .. $#genes));
