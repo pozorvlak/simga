@@ -2,10 +2,10 @@
 
 use strict;
 use warnings;
-use Sim::Generations;
-use Test::More tests => 1;
+use Sim::Generations qw(generations getopts);
+use Test::More tests => 7;
 
-is_deeply([Sim::Generations::generations(0.01, "log/generations.ga", 50)], [
+is_deeply([generations(0.01, "log/generations.ga", 50)], [
 [
 [48, 16, 90, 62, 5, 53, 77, 15, 13, 84, 12, 61, 86],
 [92, 14, 56, 51, 11, 2, 62, 31, 71, 1, 15, 91, 60],
@@ -214,3 +214,28 @@ is_deeply([Sim::Generations::generations(0.01, "log/generations.ga", 50)], [
 [69, 40, 29, 64, 2, 9, 5, 74, 75, 67, 70, 44, 19],
 ]
 ]);
+
+sub opts_ok {
+	my ($args, $results, $message) = @_;
+	local @ARGV = split /\s+/, $args;
+	is_deeply([getopts()], $results, $message);
+}
+
+opts_ok "fred.ga",
+	[0.01, "fred.ga", 50, "backup.fred", "backup.fred/generation_"],
+	"Default options";
+opts_ok "--population 5 wilma.fred.ga",
+	[0.01, "wilma.fred.ga", 5, "backup.wilma.fred", "backup.wilma.fred/generation_"],
+	"Setting population";
+opts_ok "--granularity 1 fred.ga",
+	[1, "fred.ga", 50, "backup.fred", "backup.fred/generation_"],
+	"Setting granularity";
+opts_ok "--backup mybackupdir gosh.out",
+	[0.01, "gosh.out", 50, "mybackupdir", "mybackupdir/generation_"],
+	"Setting backup";
+opts_ok "--prefix generationnumber hoojimaflip",
+	[0.01, "hoojimaflip", 50, "backup.hoojimaflip", "generationnumber"],
+	"Setting prefix";
+opts_ok "--backup mybackupdir --prefix genno oojah.log",
+	[0.01, "oojah.log", 50, "mybackupdir", "genno"],
+	"Setting backup and prefix";
