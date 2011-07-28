@@ -20,12 +20,16 @@ END
 }
 
 my ($granularity, $logfile, $population, $backup_dir, $prefix) = getopts();
+die "Backup directory $backup_dir does not exist" unless -d $backup_dir;
+die "Logfile $logfile does not exist" unless -f $logfile;
 my @generations = generations($granularity, $logfile, $population);
 for my $gen (0 .. $#generations) {
-	open my $fh, ">", "$prefix$gen";
+	open my $fh, ">", "$prefix$gen"
+	       	or die "Couldn't open $prefix$gen: $!";
 	for my $chrom (@{$generations[$gen]}) {
 		print $fh catfile($backup_dir, genes_to_dirname(@$chrom));
 		print $fh "\n";
 	}
+	close $fh;
 }
 
