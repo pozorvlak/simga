@@ -13,12 +13,16 @@ for my $dir (@ARGV) {
 	print $bestfile "generation\tenergy\n";
 	for my $genfile (glob "$dir/generation*") {
 		(my $gen_number = $genfile) =~ s/.*generation_//;
+		print "Generation $gen_number\n";
 		open my $fh, "<", $genfile;
 		my $best_energy = Math::BigInt->binf();
-		while (my $chrom = <$fh>) {
+		CHROM: while (my $chrom = <$fh>) {
 			chomp $chrom;
-			die "Chromosome $chrom doesn't exist ".
-				"at generation $gen_number" unless -d $chrom;
+			unless (-d $chrom) {
+				print STDERR "Chromosome $chrom doesn't exist ".
+					"at generation $gen_number";
+				next CHROM;
+			}
 			open my $total, "<", "$chrom/total";
 			my $totals = <$total>;
 			my ($energy, $cycles) = split /\s+/, $totals;
