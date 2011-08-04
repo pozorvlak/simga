@@ -21,7 +21,7 @@ sub energy_from_log {
 	my $filename = shift;
 	my $fullname = shift;
 	return data_from_log($filename, $fullname,
-		qr/total energy\s*($RE{num}{real})\s*\(nJ\)/,
+		qr/total energy\s*($RE{num}{real})\s*\(nJ\)/i,
 		"total energy",
 		@_);
 }
