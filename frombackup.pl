@@ -14,6 +14,7 @@ my $backup_dir = $ARGV[0] || "backup";
 die "Directory $backup_dir does not exist" unless -d $backup_dir;
 
 for my $chrom (glob "$backup_dir/*") {
+	next unless -d $chrom;
 	chdir $chrom;
 	my $energy = 0;
 	my $cycles = 0;
