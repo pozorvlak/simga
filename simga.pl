@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use AI::Genetic;
+use AI::Genetic::Pro;
 use List::Util qw/sum/;
 use File::Find;
 use Regexp::Common;
@@ -74,6 +74,7 @@ sub sum_cost {
 # Fitness function. Build and run benchmarks with branch-prediction
 # flags set appropriately, collect energy usage.
 sub fitness {
+	my $ga = shift;
 	my @genes = @{$_[0]};
 	$ENV{ECC_CC_FLAGS} = $ecc_flags . " " . ecc_args($granularity, @genes);
 	print "ECC_CC_FLAGS='$ENV{ECC_CC_FLAGS}'\n";
@@ -87,10 +88,15 @@ sub fitness {
 
 my @ranges = ([0, $scale]) x ($num_genes - 1);
 unshift @ranges, [0.5 * $scale, $scale]; # threshold > 0.5
-my $ga = new AI::Genetic(
+my $ga = new AI::Genetic::Pro(
 	-fitness => \&fitness,
 	-type => 'rangevector',
 	-population => $population,
+	-strategy => [ 'Points', 2 ],
+	-selection => [ 'Roulette' ],
+	-crossover => 0.95,
+	-parents => 2,
+	-mutation => 0.05,
 );
 if (defined $ENV{ARCHFILE}) {
 	print "Architecture file: $ENV{ARCHFILE}\n";
@@ -99,8 +105,8 @@ if (defined $ENV{ARCHFILE}) {
 }
 system("date");
 $ga->init(\@ranges);
-$ga->evolve('rouletteTwoPoint', $generations);
+$ga->evolve($generations);
 my $best = $ga->getFittest();
-print "Best score = ", $best->score, "\n";
+print "Best score = ", $ga->as_value($best), "\n";
 system("date");
-print "obtained with genes " . genes_to_dirname($best->genes()) . "\n";
+print "obtained with genes " . genes_to_dirname($ga->as_array($best)) . "\n";
