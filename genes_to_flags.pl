@@ -5,6 +5,6 @@ use warnings;
 use Sim::Flags 'ecc_args';
 
 foreach (@ARGV) {
-	my @genes = split /:/;
+	my @genes = split /[:\s]+/;
 	print ecc_args(0.01, @genes) . "\n";
 }
