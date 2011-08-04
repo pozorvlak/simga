@@ -5,6 +5,6 @@ run-eembc2:
 	for i in EEMBC/eembc-2.0/* ; \
 	do  \
 		if [ -d $$i ]; then \
-			echo -e "Total energy 5\nCycle count 7" > $$i/sim.out; \
+			echo -e "Total energy 5 (nJ)\nCycle count = 7" > $$i/sim.out; \
 		fi \
 	done
