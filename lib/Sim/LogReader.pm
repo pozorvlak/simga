@@ -1,4 +1,4 @@
-package Sim::GA;
+package Sim::LogReader;
 
 use strict;
 use warnings;

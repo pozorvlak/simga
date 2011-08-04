@@ -9,10 +9,10 @@ use File::Find;
 use Regexp::Common;
 use Cwd qw/abs_path getcwd/;
 use Getopt::Long;
-use Sim::GA qw/cycles_from_log energy_from_log/;
+use Sim::LogReader qw/cycles_from_log energy_from_log/;
 use Sim::Flags qw/ecc_args/;
 use Sim::Backup qw/backup genes_to_dirname/;
-use Sim::Constants qw/bmark bmark_dir scale granularity logfilename/;
+use Sim::Constants;
 use Math::BigInt;
 
 my $bmark = $Sim::Constants::bmark;

@@ -5,7 +5,7 @@ use warnings;
 use autodie;
 use File::Find;
 use Cwd;
-use Sim::GA qw/energy_from_log cycles_from_log/;
+use Sim::LogReader qw/energy_from_log cycles_from_log/;
 
 my $rootdir = getcwd();
 

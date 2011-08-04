@@ -5,7 +5,7 @@ use warnings;
 use Test::More tests => 2;
 use Test::Warn;
 
-use Sim::GA qw/energy_from_log/;
+use Sim::LogReader qw/energy_from_log/;
 use Math::BigInt;
 
 chdir "log";
