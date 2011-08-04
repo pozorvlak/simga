@@ -12,16 +12,17 @@ use Getopt::Long;
 use Sim::GA qw/cycles_from_log energy_from_log/;
 use Sim::Flags qw/ecc_args/;
 use Sim::Backup qw/backup genes_to_dirname/;
+use Sim::Constants qw/bmark bmark_dir scale granularity logfilename/;
 use Math::BigInt;
 
-my $bmark = "eembc2";
-my $bmark_dir = "EEMBC/eembc-2.0";
-my $scale = 100; # we represent [0,1] as {0,1,2,...$scale}
-my $granularity = 1/$scale; # granularity of gene variation
-my $num_genes = 13;
+my $bmark = $Sim::Constants::bmark;
+my $bmark_dir = $Sim::Constants::bmark_dir;
+my $scale = $Sim::Constants::scale;
+my $granularity = $Sim::Constants::granularity;
+my $num_genes = $Sim::Constants::num_genes;
 $| = 1;
 my $root_dir = getcwd();
-my $logfilename = "sim.out";
+my $logfilename = $Sim::Constants::logfilename;
 
 my $generations = 10;
 my $population = 50;
