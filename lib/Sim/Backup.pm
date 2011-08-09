@@ -7,6 +7,7 @@ our @EXPORT_OK = qw(backup backup_all genes_to_dirname savefile_name);
 use File::Copy;
 use File::Find;
 use File::Spec;
+use Sim::Constants;
 
 my $logfilename = "sim.out";
 
@@ -17,16 +18,17 @@ sub genes_to_dirname {
 sub backup {
 	my ($root_dir, $logfile, $fullname, @genes) = @_;
 	my $genes = genes_to_dirname(@genes);
-	print "Backing up to $root_dir/backup/$genes\n";
-	if (! -d "$root_dir/backup") {
-		mkdir "$root_dir/backup";
+	my $backup_dir = $Sim::Constants::backup_dir;
+	print "Backing up to $root_dir/$backup_dir/$genes\n";
+	if (! -d "$root_dir/$backup_dir") {
+		mkdir "$root_dir/$backup_dir";
 	}
-	if (! -d "$root_dir/backup/$genes") {
-		mkdir "$root_dir/backup/$genes";
+	if (! -d "$root_dir/$backup_dir/$genes") {
+		mkdir "$root_dir/$backup_dir/$genes";
 	}
 	(my $newfilename = $fullname) =~ s|/|:|g;
 	$newfilename =~ s/^.://;
-	my $newfilepath = "$root_dir/backup/$genes/$newfilename";
+	my $newfilepath = "$root_dir/$backup_dir/$genes/$newfilename";
 	if (! -e $logfile) { warn "$logfile doesn't exist\n"; }
 	copy $logfile, $newfilepath or warn "Couldn't copy: $!";
 }
@@ -44,7 +46,7 @@ sub backup_all {
 
 sub savefile_name {
 	my ($generation) = @_;
-	return "backup/state_$generation.sga";
+	return "$Sim::Constants::backup_dir/state_$generation.sga";
 }
 
 1;
