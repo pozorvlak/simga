@@ -15,20 +15,25 @@ sub genes_to_dirname {
 	return join ":", @_;
 }
 
+sub mkdir_unless_exists {
+	my $dirname = shift;
+	if (! -d $dirname) {
+		mkdir $dirname or die "Couldn't make $dirname: $!";
+	}
+}
+
 sub backup {
 	my ($root_dir, $logfile, $fullname, @genes) = @_;
 	my $genes = genes_to_dirname(@genes);
 	my $backup_dir = $Sim::Constants::backup_dir;
-	print "Backing up to $root_dir/$backup_dir/$genes\n";
-	if (! -d "$root_dir/$backup_dir") {
-		mkdir "$root_dir/$backup_dir";
-	}
-	if (! -d "$root_dir/$backup_dir/$genes") {
-		mkdir "$root_dir/$backup_dir/$genes";
-	}
+	my $rel_backup_dir = File::Spec->catfile($root_dir, $backup_dir);
+	my $gene_dir = File::Spec->catfile($rel_backup_dir, $genes);
+	print "Backing up to $gene_dir\n";
+	mkdir_unless_exists $rel_backup_dir;
+	mkdir_unless_exists $gene_dir;
 	(my $newfilename = $fullname) =~ s|/|:|g;
 	$newfilename =~ s/^.://;
-	my $newfilepath = "$root_dir/$backup_dir/$genes/$newfilename";
+	my $newfilepath = File::Spec->catfile($gene_dir, $newfilename);
 	if (! -e $logfile) { warn "$logfile doesn't exist\n"; }
 	copy $logfile, $newfilepath or warn "Couldn't copy: $!";
 }
@@ -46,7 +51,8 @@ sub backup_all {
 
 sub savefile_name {
 	my ($generation) = @_;
-	return "$Sim::Constants::backup_dir/state_$generation.sga";
+	return File::Spec->catfile($Sim::Constants::backup_dir,
+		"state_$generation.sga");
 }
 
 1;
