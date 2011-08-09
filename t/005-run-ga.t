@@ -25,8 +25,11 @@ ok $out =~ /Best score/, "Best score shown";
 ok $out =~ /with genes/, "Best genes listed";
 
 ok -d "backup", "Backup directory created";
-my @backup_logfiles = glob("backup/*/*sim.out");
 
+my @backup_logfiles = glob("backup/*/*sim.out");
 is @logfiles, @backup_logfiles, "All log files backed up";
+
+my @savefiles = glob("backup/*.sga");
+ok @savefiles == 1, "One savefile created per completed generation";
 
 done_testing();

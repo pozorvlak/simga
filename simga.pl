@@ -11,7 +11,7 @@ use Cwd qw/abs_path getcwd/;
 use Getopt::Long;
 use Sim::LogReader qw/cycles_from_log energy_from_log/;
 use Sim::Flags qw/ecc_args/;
-use Sim::Backup qw/backup genes_to_dirname/;
+use Sim::Backup qw/backup genes_to_dirname savefile_name/;
 use Sim::Constants;
 use Math::BigInt;
 
@@ -105,7 +105,10 @@ if (defined $ENV{ARCHFILE}) {
 }
 system("date");
 $ga->init(\@ranges);
-$ga->evolve($generations);
+for my $gen (0 .. $generations - 1) {
+	$ga->evolve(1);
+	$ga->save(savefile_name($gen));
+}
 my $best = $ga->getFittest();
 print "Best score = ", $ga->as_value($best), "\n";
 system("date");

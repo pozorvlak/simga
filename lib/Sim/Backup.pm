@@ -3,9 +3,10 @@ package Sim::Backup;
 use strict;
 use warnings;
 use base 'Exporter';
-our @EXPORT_OK = qw(backup backup_all genes_to_dirname);
+our @EXPORT_OK = qw(backup backup_all genes_to_dirname savefile_name);
 use File::Copy;
 use File::Find;
+use File::Spec;
 
 my $logfilename = "sim.out";
 
@@ -39,6 +40,11 @@ sub backup_all {
 			backup $root_dir, $logfilename, $File::Find::name, @genes;
 		}
 	}, $bmark_dir);
+}
+
+sub savefile_name {
+	my ($generation) = @_;
+	return "backup/state_$generation.sga";
 }
 
 1;
