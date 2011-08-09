@@ -9,7 +9,7 @@ use File::Find;
 use File::Spec;
 use Sim::Constants;
 
-my $logfilename = "sim.out";
+my $logfilename = $Sim::Constants::logfilename;
 
 sub genes_to_dirname {
 	return join ":", @_;

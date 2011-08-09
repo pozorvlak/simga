@@ -13,7 +13,7 @@ rmtree("backup");
 ok !-d "backup", "Backup directory successfully deleted";
 ok system( "../simga.pl --generations=1 --population=1 > out.ga 2>&1") == 0,
 	"simga.pl returns shell-true status";
-my @logfiles = glob("$Sim::Constants::bmark_dir/*/sim.out");
+my @logfiles = glob("$Sim::Constants::bmark_dir/*/$Sim::Constants::logfilename");
 
 open my $outfile, "<", "out.ga";
 local $/ = undef;
@@ -26,7 +26,7 @@ ok $out =~ /with genes/, "Best genes listed";
 
 ok -d "backup", "Backup directory created";
 
-my @backup_logfiles = glob("backup/*/*sim.out");
+my @backup_logfiles = glob("backup/*/*$Sim::Constants::logfilename");
 is @logfiles, @backup_logfiles, "All log files backed up";
 
 my @savefiles = glob("backup/*.sga");
