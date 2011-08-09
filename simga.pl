@@ -57,15 +57,14 @@ END
 sub sum_cost {
 	my @genes = @_; # needed to provide sensible error messages
 	my $cost = 0;
+	my $costfn = $optimize_for_cycles?\&cycles_from_log:\&energy_from_log;
 	find(sub {
 		if ($_ eq $logfilename) {
-			if ($optimize_for_cycles) {
-				$cost += cycles_from_log($logfilename, $File::Find::name, @genes);
-			} else {
-				$cost += energy_from_log($logfilename, $File::Find::name, @genes);
-			}
                         # passing in $_ leads to first arg being undefined...
-			backup $root_dir, $logfilename, $File::Find::name, @genes;
+			$cost += $costfn->($logfilename,
+				$File::Find::name, @genes);
+			backup $root_dir, $logfilename,
+				$File::Find::name, @genes;
 		}
 	}, $bmark_dir);
 	return $cost;
