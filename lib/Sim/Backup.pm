@@ -51,6 +51,7 @@ sub backup_all {
 
 sub savefile_name {
 	my ($generation) = @_;
+	mkdir_unless_exists($Sim::Constants::backup_dir);
 	return File::Spec->catfile($Sim::Constants::backup_dir,
 		"state_$generation.sga");
 }
