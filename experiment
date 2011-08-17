@@ -1,12 +1,24 @@
 #!/bin/sh
 
+GA_FLAGS="--generations=100"
+
 for ARCHNAME in $*;
 do
+	if [ "$ARCHNAME" = "-t" ]; then
+		# activate test mode
+		echo "Activating test mode"
+		GA_FLAGS="--generations=1 --population=1"
+		continue
+	fi
+	echo "Processing $ARCHNAME"
 	# delete old log files
 	rm -rf `find EEMBC -iname sim.out`
+	# Ensure that ARCHFILE is the name of a .arc file
+	# and ARCHNAME is its basename.
+	ARCHNAME=`basename $ARCHNAME .arc`
 	export ARCHFILE=$ARCHNAME.arc
 	DATE=`date +%y%m%d`
-	simga --generations=100 > $ARCHNAME.$DATE.ga 2>&1
+	simga $GA_FLAGS > $ARCHNAME.$DATE.ga 2>&1
 	frombackup
 	BACKUP=backup.$ARCHNAME.$DATE
 	if [ -d $BACKUP ]; then
