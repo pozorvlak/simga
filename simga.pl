@@ -54,8 +54,10 @@ END
 	exit 0;
 }
 
+# Find the total cost of running the benchmarks with a given set of genes.
+# Backs up the individual log-files as a side-effect.
 sub sum_cost {
-	my @genes = @_; # needed to provide sensible error messages
+	my @genes = @_; # needed to provide sensible error messages downstream
 	my $cost = 0;
 	find(sub {
 		if ($_ eq $logfilename) {
