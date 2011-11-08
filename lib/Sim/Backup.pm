@@ -6,6 +6,8 @@ use base 'Exporter';
 our @EXPORT_OK = qw(backup backup_all genes_to_dirname);
 use File::Copy;
 use File::Find;
+use Sim::Constants;
+use Cwd;
 
 my $logfilename = "sim.out";
 
@@ -31,14 +33,15 @@ sub backup {
 }
 
 sub backup_all {
-	my $bmark_dir = shift;
-	my %options = shift;
+	my $options = shift;
 	my @genes = @_; # needed to provide sensible error messages
+	my $bmark_dir = $Sim::Constants::bmark_dir;
 	my $root_dir = getcwd();
-	my $matcher = $options{backup_matcher} || $logfilename;
+	my $matcher = $options->{backup_matcher} || $logfilename;
 	find(sub {
 		if ($_ =~ $matcher) {
-			backup $root_dir, $logfilename, $File::Find::name, @genes;
+			my $filename = $_;
+			backup $root_dir, $filename, $File::Find::name, @genes;
 		}
 	}, $bmark_dir);
 }
