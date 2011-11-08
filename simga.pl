@@ -15,7 +15,7 @@ use Math::BigInt;
 
 my $scale = $Sim::Constants::scale;
 my $num_genes = $Sim::Constants::num_genes;
-$| = 1;
+$| = 1; # set autoflush
 my $root_dir = getcwd();
 my $generations = 10;
 my $population = 50;
