@@ -32,10 +32,12 @@ sub backup {
 
 sub backup_all {
 	my $bmark_dir = shift;
+	my %options = shift;
 	my @genes = @_; # needed to provide sensible error messages
 	my $root_dir = getcwd();
+	my $matcher = $options{backup_matcher} || $logfilename;
 	find(sub {
-		if ($_ eq $logfilename) {
+		if ($_ =~ $matcher) {
 			backup $root_dir, $logfilename, $File::Find::name, @genes;
 		}
 	}, $bmark_dir);
