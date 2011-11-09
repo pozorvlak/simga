@@ -20,7 +20,7 @@ sub round {
 }
 
 
-my @flag_names = (
+our @flag_names = (
 	"-bt",
 	"-bw_noreturn",
 	"-bw_non_equal",
