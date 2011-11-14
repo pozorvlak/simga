@@ -39,7 +39,7 @@ sub backup_all {
 	my $root_dir = getcwd();
 	my $matcher = $options->{backup_matcher} || $logfilename;
 	find(sub {
-		if ($_ =~ $matcher) {
+		if ($File::Find::name =~ $matcher) {
 			my $filename = $_;
 			backup $root_dir, $filename, $File::Find::name, @genes;
 		}

@@ -13,7 +13,7 @@ my $options = {
 	ecc_flags => $ENV{ECC_CC_FLAGS},
 	root_dir => getcwd(),
 	target => "build",
-	backup_matcher => qr/\.o$/,
+	backup_matcher => qr|/bin|,
 };
 
 my $fitness = Sim::Fitness::make_fitness($options);
