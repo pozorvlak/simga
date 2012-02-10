@@ -21,7 +21,7 @@ my $fitness = Sim::Fitness::make_fitness($options);
 
 my @geneses;
 for my $i (1 .. $num_heuristics) {
-	my @genes = (0.5, ("0.0000001") x $num_heuristics);
+	my @genes = (0.5, ("0.5") x $num_heuristics);
 	$genes[$i] = 1;
 	push @geneses, \@genes;
 }
