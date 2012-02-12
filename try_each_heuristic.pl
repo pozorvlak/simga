@@ -6,6 +6,16 @@ use Sim::Constants;
 use Sim::Fitness;
 use Cwd;
 use Sim::Flags;
+use File::stat;
+
+# Refuse to run unless you've rebuilt librt since updating the compiler.
+my $acc = `which acc`; chomp $acc;
+my $acc_mtime = stat($acc)->mtime;
+my $librt_mtime = stat("/disk/scratch/ecc/build/libs/build/lib/librt.a")->mtime;
+if ($librt_mtime <= $acc_mtime) {
+	warn "\nRebuild librt to reflect compiler changes!\n\n";
+	exit 1;
+}
 
 my $num_genes = $Sim::Constants::num_genes;
 my $num_heuristics = $num_genes - 1; # zeroth gene is prediction threshold.
